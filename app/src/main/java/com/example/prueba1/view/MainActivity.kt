@@ -10,9 +10,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.prueba1.R
 import com.example.prueba1.logic.Client
 import com.example.prueba1.logic.Controller
-import com.example.prueba1.logic.interfaces.OperationsInterface
 
-class MainActivity : AppCompatActivity(), OperationsInterface {
+class MainActivity : AppCompatActivity(){
     private lateinit var myButtonAdd: ImageView
     private lateinit var myButtonUpdate: ImageView
     private lateinit var myButtonDel: ImageView
@@ -46,9 +45,16 @@ class MainActivity : AppCompatActivity(), OperationsInterface {
         myButtonAdd = findViewById(R.id.iv_add)
         myButtonUpdate = findViewById(R.id.iv_edit)
         myButtonDel = findViewById(R.id.iv_delete)
-        myDialog = Dialog(controller)
-
-        myDialog.setListener(this)
+        myDialog = Dialog(controller,
+            { id, name ->
+                ClientAdd(id, name)
+            },
+            { id, name ->
+                ClientUpdate(id, name)
+            },
+            { id ->
+                ClientDel(id)
+            })
 
         myButtonAdd.setOnClickListener{
             myDialog.show(0)
@@ -68,7 +74,7 @@ class MainActivity : AppCompatActivity(), OperationsInterface {
     }
 
 
-    override fun ClientAdd(id: Int, name: String){
+    fun ClientAdd(id: Int, name: String){
         val newClient = Client (id, name)
         controller.ClientAddController(newClient)
         var msg =  "El cliente con id = $id, ha sido insertado correctamente"
@@ -77,7 +83,7 @@ class MainActivity : AppCompatActivity(), OperationsInterface {
         showConsoleData(msg)
     }
 
-    override fun ClientDel(id: Int) {
+    fun ClientDel(id: Int) {
         var msg = ""
         val delete = controller.ClientDelController(id)  //borramos
 
@@ -92,8 +98,7 @@ class MainActivity : AppCompatActivity(), OperationsInterface {
     }
 
 
-
-    override fun ClientUpdate(id: Int, name: String) {
+    fun ClientUpdate(id: Int, name: String) {
         var msg = ""
         val update = controller.ClientEditController(id, name)
 

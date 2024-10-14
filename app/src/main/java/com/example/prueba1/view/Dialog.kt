@@ -2,51 +2,46 @@ package com.example.prueba1.view
 
 import com.example.prueba1.data.RepositoryClient
 import com.example.prueba1.logic.Controller
-import com.example.prueba1.logic.interfaces.OperationsInterface
 
-class Dialog(var controller : Controller) {
-    private var listener: OperationsInterface? = null
+class Dialog(var controller : Controller,
+             var clientAdd :  (Int, String) -> Unit,
+             var  clientUpdate : (Int,  String)-> Unit,
+             var  clientDel : (Int) -> Unit) {
+
 
     private var action : Int = 0
 
 
-    fun setListener ( _listener : OperationsInterface){
-        listener = _listener
-
-    }
 
 
     fun show(typeAction : Int){
-        listener?.let{
-            val posibleName = "CAMBIADO"
-            val posibleId = controller.devIdRandom()
-            when (typeAction){
-                0 -> onAccept()
+        val posibleName = "CAMBIADO"
+        val posibleId = controller.devIdRandom()
+        when (typeAction){
+            0 -> onAccept()
 
-                1 ->
-                    if (posibleId != -1)
-                        onEdit(posibleId, "CAMBIADO")
+            1 ->
+                if (posibleId != -1)
+                    onEdit(posibleId, "CAMBIADO")
 
-                2 ->
-                    if (posibleId != -1)
-                        onDelete(posibleId)
-
-            }
+            2 ->
+                if (posibleId != -1)
+                    onDelete(posibleId)
 
         }
+
     }
 
     private fun onDelete(id : Int) {
-        listener!!.ClientDel(id)
+        clientDel(id)
     }
 
     private fun onEdit(id: Int, name : String) {
-        listener!!.ClientUpdate(id, name)
+        clientUpdate(id, name)
     }
 
-
     private fun onAccept() {
-        listener!!.ClientAdd(RepositoryClient.incrementPrimary(), "NUEVO CLIENTE")
+        clientAdd(RepositoryClient.incrementPrimary(), "NUEVO CLIENTE")
     }
 }
 
